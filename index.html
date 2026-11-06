@@ -36,8 +36,6 @@
       <input type="number" id="nota" min="0" max="10" step="0.1" required>
     </label><br><br>
 
-    <!-- >>> MUDANÇA (Exercício 3): removido o onclick="salvarAluno()";
-         o clique agora é tratado com addEventListener no script.js -->
     <button type="button" id="btn-salvar">Cadastrar</button>
   </form>
 
@@ -51,6 +49,18 @@
     </thead>
     <tbody id="tabela-alunos"></tbody>
   </table>
+
+  <!-- >>> MUDANÇA (Exercício 4): SEÇÃO NOVA de relatórios (botões + área de resultado) -->
+  <h2>Relatórios</h2>
+  <button id="btn-aprovados">Alunos aprovados</button>
+  <button id="btn-media-notas">Média das notas</button>
+  <button id="btn-media-idades">Média das idades</button>
+  <button id="btn-ordem-alfabetica">Nomes em ordem alfabética</button>
+  <button id="btn-por-curso">Alunos por curso</button>
+
+  <!-- Área onde o resultado do relatório é exibido -->
+  <div id="resultado-relatorio"></div>
+  <!-- >>> FIM DA MUDANÇA (Exercício 4) -->
 
   <!-- aluno.js precisa vir ANTES do script.js -->
   <script src="aluno.js"></script>
