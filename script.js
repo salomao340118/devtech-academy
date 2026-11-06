@@ -1,4 +1,5 @@
-// Array que guarda os alunos em memória (os dados somem ao recarregar a página)
+// Array em memória com os alunos
+// >>> MUDANÇA (Exercício 2): agora guarda instâncias da classe Aluno (e não objetos simples)
 let alunos = [];
 
 // Posição do aluno em edição (null = cadastro novo)
@@ -6,17 +7,18 @@ let indiceEdicao = null;
 
 // Valida os dados; retorna mensagem de erro ou null se estiver tudo certo
 function validarAluno(nome, idadeTxt, notaTxt) {
-  // Nome: só letras (\p{L} aceita acentos), separadas por espaço, hífen ou apóstrofo
+  // Nome: só letras (com acento), separadas por espaço, hífen ou apóstrofo
   if (!/^\p{L}+(?:[ '\-]\p{L}+)*$/u.test(nome)) {
     return "O nome deve conter apenas letras (sem números ou símbolos).";
   }
 
-  // Number() é mais rígido que parseInt: "12abc" vira NaN em vez de 12
+  // Idade: inteiro entre 1 e 120
   const idade = Number(idadeTxt);
   if (idadeTxt === "" || !Number.isInteger(idade) || idade < 1 || idade > 120) {
     return "A idade deve ser um número inteiro entre 1 e 120.";
   }
 
+  // Nota: entre 0 e 10
   const nota = Number(notaTxt);
   if (notaTxt === "" || isNaN(nota) || nota < 0 || nota > 10) {
     return "A nota final deve ser um número entre 0 e 10.";
@@ -38,18 +40,14 @@ function salvarAluno() {
     return;
   }
 
-  // Objeto simples (a classe Aluno só aparece no Exercício 2)
-  const aluno = {
-    nome,
-    idade: Number(idadeTxt),
-    curso,
-    notaFinal: Number(notaTxt)
-  };
+  // >>> MUDANÇA (Exercício 2): antes era um objeto simples { nome, idade, curso, notaFinal };
+  // agora o aluno é criado a partir da classe Aluno, usando o construtor
+  const aluno = new Aluno(nome, Number(idadeTxt), curso, Number(notaTxt));
 
   if (indiceEdicao === null) {
-    alunos.push(aluno);            // cadastro novo
+    alunos.push(aluno);               // cadastro novo
   } else {
-    alunos[indiceEdicao] = aluno;  // edição: substitui o aluno
+    alunos[indiceEdicao] = aluno;     // edição: substitui o aluno
     indiceEdicao = null;
     document.getElementById("btn-salvar").textContent = "Cadastrar";
   }
@@ -83,7 +81,7 @@ function excluirAluno(indice) {
   renderizarTabela();
 }
 
-// Desenha a tabela com base no array de alunos
+// Redesenha a tabela com base no array de alunos
 function renderizarTabela() {
   const tbody = document.getElementById("tabela-alunos");
   tbody.innerHTML = "";
@@ -96,6 +94,8 @@ function renderizarTabela() {
         <td>${a.idade}</td>
         <td>${a.curso}</td>
         <td>${a.notaFinal}</td>
+        <!-- >>> MUDANÇA (Exercício 2): nova coluna que usa o método isAprovado() da classe -->
+        <td>${a.isAprovado() ? "Aprovado" : "Reprovado"}</td>
         <td>
           <button onclick="editarAluno(${i})">Editar</button>
           <button onclick="excluirAluno(${i})">Excluir</button>
