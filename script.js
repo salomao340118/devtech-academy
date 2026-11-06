@@ -1,12 +1,18 @@
-// Array em memória com os alunos
-// >>> MUDANÇA (Exercício 2): agora guarda instâncias da classe Aluno (e não objetos simples)
+// Array em memória com as instâncias de Aluno
 let alunos = [];
 
 // Posição do aluno em edição (null = cadastro novo)
 let indiceEdicao = null;
 
-// Valida os dados; retorna mensagem de erro ou null se estiver tudo certo
-function validarAluno(nome, idadeTxt, notaTxt) {
+// >>> MUDANÇA (Exercício 3): ARROW FUNCTIONS de manipulação dos dados
+// (substituem o alunos.push, alunos[i] = ... e alunos.splice que ficavam soltos nas funções)
+const adicionarAluno = (aluno) => alunos.push(aluno);
+const atualizarAluno = (indice, aluno) => { alunos[indice] = aluno; };
+const removerAluno = (indice) => alunos.splice(indice, 1);
+
+// >>> MUDANÇA (Exercício 3): validarAluno virou ARROW FUNCTION (antes era "function validarAluno")
+// Retorna mensagem de erro ou null se estiver tudo certo
+const validarAluno = (nome, idadeTxt, notaTxt) => {
   // Nome: só letras (com acento), separadas por espaço, hífen ou apóstrofo
   if (!/^\p{L}+(?:[ '\-]\p{L}+)*$/u.test(nome)) {
     return "O nome deve conter apenas letras (sem números ou símbolos).";
@@ -25,81 +31,113 @@ function validarAluno(nome, idadeTxt, notaTxt) {
   }
 
   return null;
-}
+};
 
-// Cadastra ou edita um aluno, conforme o modo atual
-function salvarAluno() {
+// >>> MUDANÇA (Exercício 3): referências aos elementos, buscadas uma única vez
+// (necessárias para o addEventListener)
+const btnSalvar = document.getElementById("btn-salvar");
+const form = document.getElementById("form-aluno");
+
+// >>> MUDANÇA (Exercício 3): nova arrow function que sai do modo edição
+// (reaproveita o código que antes se repetia em salvarAluno e excluirAluno)
+const cancelarEdicao = () => {
+  indiceEdicao = null;
+  form.reset();
+  btnSalvar.textContent = "Cadastrar";
+};
+
+// >>> MUDANÇA (Exercício 3): addEventListener com FUNÇÃO ANÔNIMA
+// (substitui a função salvarAluno() chamada pelo onclick do HTML)
+btnSalvar.addEventListener("click", function () {
   const nome = document.getElementById("nome").value.trim();
   const idadeTxt = document.getElementById("idade").value;
   const curso = document.getElementById("curso").value;
   const notaTxt = document.getElementById("nota").value;
 
+  // Se os dados forem inválidos, avisa e para
   const erro = validarAluno(nome, idadeTxt, notaTxt);
   if (erro) {
     alert(erro);
     return;
   }
 
-  // >>> MUDANÇA (Exercício 2): antes era um objeto simples { nome, idade, curso, notaFinal };
-  // agora o aluno é criado a partir da classe Aluno, usando o construtor
   const aluno = new Aluno(nome, Number(idadeTxt), curso, Number(notaTxt));
 
   if (indiceEdicao === null) {
-    alunos.push(aluno);               // cadastro novo
+    adicionarAluno(aluno);
+    // >>> MUDANÇA (Exercício 3): mensagem ao cadastrar
+    alert("Aluno cadastrado com sucesso!");
   } else {
-    alunos[indiceEdicao] = aluno;     // edição: substitui o aluno
-    indiceEdicao = null;
-    document.getElementById("btn-salvar").textContent = "Cadastrar";
+    atualizarAluno(indiceEdicao, aluno);
+    // >>> MUDANÇA (Exercício 3): mensagem ao editar
+    alert("Aluno editado com sucesso!");
   }
 
-  document.getElementById("form-aluno").reset();
+  // >>> MUDANÇA (Exercício 3): mensagem no console do navegador (F12)
+  console.log(aluno.toString());
+  cancelarEdicao();
   renderizarTabela();
-}
+});
 
-// Joga os dados do aluno de volta no formulário para edição
-function editarAluno(indice) {
-  const aluno = alunos[indice];
-  document.getElementById("nome").value = aluno.nome;
-  document.getElementById("idade").value = aluno.idade;
-  document.getElementById("curso").value = aluno.curso;
-  document.getElementById("nota").value = aluno.notaFinal;
-
+// >>> MUDANÇA (Exercício 3): editarAluno virou ARROW FUNCTION com outro nome
+// (antes era "function editarAluno", chamada pelo onclick)
+const preencherFormulario = (indice) => {
+  const a = alunos[indice];
+  document.getElementById("nome").value = a.nome;
+  document.getElementById("idade").value = a.idade;
+  document.getElementById("curso").value = a.curso;
+  document.getElementById("nota").value = a.notaFinal;
   indiceEdicao = indice;
-  document.getElementById("btn-salvar").textContent = "Salvar alteração";
+  btnSalvar.textContent = "Salvar alteração";
+};
+
+// >>> MUDANÇA (Exercício 3): função nova que cria um botão e registra o evento de clique nele
+function criarBotao(texto, aoClicar) {
+  const botao = document.createElement("button");
+  botao.textContent = texto;
+  botao.addEventListener("click", aoClicar);
+  return botao;
 }
 
-// Exclui o aluno e cancela a edição, se houver uma em andamento
-function excluirAluno(indice) {
-  alunos.splice(indice, 1);
-
-  if (indiceEdicao !== null) {
-    indiceEdicao = null;
-    document.getElementById("form-aluno").reset();
-    document.getElementById("btn-salvar").textContent = "Cadastrar";
-  }
-
-  renderizarTabela();
-}
-
-// Redesenha a tabela com base no array de alunos
+// >>> MUDANÇA (Exercício 3): a tabela agora é criada via DOM (createElement), com forEach
+// e arrow function, sem onclick dentro do HTML. A função excluirAluno() foi removida,
+// pois a exclusão agora acontece dentro do evento do botão "Excluir".
 function renderizarTabela() {
   const tbody = document.getElementById("tabela-alunos");
   tbody.innerHTML = "";
 
-  for (let i = 0; i < alunos.length; i++) {
-    const a = alunos[i];
-    tbody.innerHTML += `
-      <tr>
-        <td>${a.nome}</td>
-        <td>${a.idade}</td>
-        <td>${a.curso}</td>
-        <td>${a.notaFinal}</td>
-        <!-- >>> MUDANÇA (Exercício 2): nova coluna que usa o método isAprovado() da classe -->
-        <td>${a.isAprovado() ? "Aprovado" : "Reprovado"}</td>
-        <td>
-          <button onclick="editarAluno(${i})">Editar</button>
-          <button onclick="excluirAluno(${i})">Excluir</button>
-        </td>
-      </tr>`;
-  }
+  // forEach com arrow function: "a" é o aluno e "i" é a posição dele
+  alunos.forEach((a, i) => {
+    const tr = document.createElement("tr");
+
+    // Cria uma célula <td> para cada valor da linha
+    [a.nome, a.idade, a.curso, a.notaFinal, a.isAprovado() ? "Aprovado" : "Reprovado"]
+      .forEach((valor) => {
+        const td = document.createElement("td");
+        td.textContent = valor;
+        tr.appendChild(td);
+      });
+
+    // Célula com os botões de ação
+    const tdAcoes = document.createElement("td");
+
+    // >>> MUDANÇA (Exercício 3): botão Editar com FUNÇÃO ANÔNIMA no evento de clique
+    tdAcoes.appendChild(criarBotao("Editar", function () {
+      preencherFormulario(i);
+      console.log(`Editando: ${a.toString()}`);
+    }));
+
+    // >>> MUDANÇA (Exercício 3): botão Excluir com FUNÇÃO ANÔNIMA no evento de clique,
+    // com mensagens por alert() e console.log()
+    tdAcoes.appendChild(criarBotao("Excluir", function () {
+      removerAluno(i);
+      if (indiceEdicao !== null) cancelarEdicao(); // evita índice de edição inválido
+      alert("Aluno excluído!");
+      console.log(`Excluído: ${a.toString()}`);
+      renderizarTabela();
+    }));
+
+    tr.appendChild(tdAcoes);
+    tbody.appendChild(tr);
+  });
 }

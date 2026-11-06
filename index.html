@@ -36,7 +36,9 @@
       <input type="number" id="nota" min="0" max="10" step="0.1" required>
     </label><br><br>
 
-    <button type="button" id="btn-salvar" onclick="salvarAluno()">Cadastrar</button>
+    <!-- >>> MUDANÇA (Exercício 3): removido o onclick="salvarAluno()";
+         o clique agora é tratado com addEventListener no script.js -->
+    <button type="button" id="btn-salvar">Cadastrar</button>
   </form>
 
   <h2>Alunos cadastrados</h2>
@@ -44,14 +46,13 @@
   <table border="1" cellpadding="5">
     <thead>
       <tr>
-        <!-- >>> MUDANÇA (Exercício 2): nova coluna "Situação" no cabeçalho -->
         <th>Nome</th><th>Idade</th><th>Curso</th><th>Nota Final</th><th>Situação</th><th>Ações</th>
       </tr>
     </thead>
     <tbody id="tabela-alunos"></tbody>
   </table>
 
-  <!-- >>> MUDANÇA (Exercício 2): novo script aluno.js, que precisa vir ANTES do script.js -->
+  <!-- aluno.js precisa vir ANTES do script.js -->
   <script src="aluno.js"></script>
   <script src="script.js"></script>
 </body>
