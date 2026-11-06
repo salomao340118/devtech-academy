@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>DevTech Academy</title>
+</head>
+<body>
+  <h1>DevTech Academy - Alunos</h1>
+
+  <!-- Formulário de cadastro de alunos -->
+  <form id="form-aluno">
+
+    <!-- Nome: só letras (com acento), espaços, hífen e apóstrofo -->
+    <label>Nome:
+      <input type="text" id="nome" required
+             pattern="^\p{L}+([ '\-]\p{L}+)*$"
+             title="Use apenas letras, sem números ou símbolos">
+    </label><br><br>
+
+    <!-- Idade: inteiro de 1 a 120 -->
+    <label>Idade:
+      <input type="number" id="idade" min="1" max="120" step="1" required>
+    </label><br><br>
+
+    <!-- Curso: opções do enunciado -->
+    <label>Curso:
+      <select id="curso">
+        <option value="JavaScript">JavaScript</option>
+        <option value="Python">Python</option>
+        <option value="Java">Java</option>
+      </select>
+    </label><br><br>
+
+    <!-- Nota final: de 0 a 10 -->
+    <label>Nota Final:
+      <input type="number" id="nota" min="0" max="10" step="0.1" required>
+    </label><br><br>
+
+    <!-- O onclick chama a função do script.js -->
+    <button type="button" id="btn-salvar" onclick="salvarAluno()">Cadastrar</button>
+  </form>
+
+  <h2>Alunos cadastrados</h2>
+
+  <!-- Tabela preenchida dinamicamente pelo JavaScript -->
+  <table border="1" cellpadding="5">
+    <thead>
+      <tr>
+        <th>Nome</th><th>Idade</th><th>Curso</th><th>Nota Final</th><th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="tabela-alunos"></tbody>
+  </table>
+
+  <script src="script.js"></script>
+</body>
+</html>
