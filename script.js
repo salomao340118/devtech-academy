@@ -4,6 +4,30 @@ let alunos = [];
 // Posição do aluno em edição (null = cadastro novo)
 let indiceEdicao = null;
 
+// ---------- Controle de tema (claro / escuro) ----------
+const btnTema = document.getElementById("btn-tema");
+const htmlElement = document.documentElement;
+
+const aplicarTema = (tema) => {
+  htmlElement.setAttribute("data-bs-theme", tema);
+  localStorage.setItem("temaPreferido", tema);
+
+  if (btnTema) {
+    btnTema.textContent = tema === "dark" ? "Modo Claro" : "Modo Escuro";
+  }
+};
+
+const temaSalvo = localStorage.getItem("temaPreferido") || "light";
+aplicarTema(temaSalvo);
+
+if (btnTema) {
+  btnTema.addEventListener("click", () => {
+    const temaAtual = htmlElement.getAttribute("data-bs-theme") || "light";
+    const novoTema = temaAtual === "dark" ? "light" : "dark";
+    aplicarTema(novoTema);
+  });
+}
+
 // ---------- Arrow functions de manipulação dos dados ----------
 const adicionarAluno = (aluno) => alunos.push(aluno);
 const atualizarAluno = (indice, aluno) => { alunos[indice] = aluno; };

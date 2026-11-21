@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-bs-theme="light">
 <head>
   <meta charset="UTF-8">
   <!-- >>> MUDANÇA (Bootstrap): viewport, necessário para o layout responsivo funcionar no celular -->
@@ -10,13 +10,19 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.9/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<!-- >>> MUDANÇA (Bootstrap): bg-light = fundo cinza claro -->
-<body class="bg-light">
+<!-- >>> MUDANÇA (Bootstrap): bg-body-tertiary = fundo adaptável ao tema claro/escuro -->
+<body class="bg-body-tertiary">
 
   <!-- >>> MUDANÇA (Bootstrap): container centraliza o conteúdo; py-4 = espaçamento vertical -->
   <div class="container py-4">
 
-    <h1 class="mb-4">DevTech Academy - Alunos</h1>
+    <!-- Cabeçalho com o título à esquerda e o botão de tema à direita -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h1 class="mb-0">DevTech Academy - Alunos</h1>
+      <button id="btn-tema" class="btn btn-outline-secondary">
+          Modo Escuro
+      </button>
+    </div>
 
     <!-- >>> MUDANÇA (Bootstrap): o formulário agora fica dentro de um "card" -->
     <div class="card shadow-sm mb-4">
@@ -35,10 +41,10 @@
                      title="Use apenas letras, sem números ou símbolos">
             </div>
 
-            <!-- Idade: inteiro de 1 a 120 -->
+            <!-- Idade: inteiros não negativos -->
             <div class="col-md-6">
               <label for="idade" class="form-label">Idade</label>
-              <input type="number" class="form-control" id="idade" min="1" max="120" step="1" required>
+              <input type="number" class="form-control" id="idade" min="0" max="120" step="1" required>
             </div>
 
             <!-- Curso: form-select é a classe do Bootstrap para <select> -->
@@ -69,10 +75,9 @@
 
     <h2 class="h4">Alunos cadastrados</h2>
 
-    <!-- >>> MUDANÇA (Bootstrap): table-responsive cria rolagem lateral em telas pequenas;
-         as classes "table ..." estilizam a tabela (listras, destaque ao passar o mouse) -->
+    <!-- >>> MUDANÇA (Bootstrap): removida a classe "bg-white" para a tabela acompanhar o tema -->
     <div class="table-responsive mb-4">
-      <table class="table table-striped table-hover table-bordered align-middle bg-white">
+      <table class="table table-striped table-hover table-bordered align-middle">
         <thead class="table-dark">
           <tr>
             <th>Nome</th><th>Idade</th><th>Curso</th><th>Nota Final</th><th>Situação</th><th>Ações</th>
