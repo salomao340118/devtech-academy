@@ -35,21 +35,24 @@ const removerAluno = (indice) => alunos.splice(indice, 1);
 
 // Retorna mensagem de erro ou null se estiver tudo certo
 const validarAluno = (nome, idadeTxt, notaTxt) => {
-  // Nome: só letras (com acento), separadas por espaço, hífen ou apóstrofo
-  if (!/^\p{L}+(?:[ '\-]\p{L}+)*$/u.test(nome)) {
-    return "O nome deve conter apenas letras";
+  // Nome: obrigatório
+  if (nome === "") {
+    return "Informe o nome do aluno.";
   }
 
-  // Idade: inteiro entre 1 e 120
-  const idade = Number(idadeTxt);
-  if (idadeTxt === "" || !Number.isInteger(idade) || idade < 1 || idade > 120) {
-    return "A idade deve ser um número inteiro não negativo";
+  // Nome: só letras (com acento), separadas por espaço, hífen ou apóstrofo, até 100 caracteres
+  if (nome.length > 100 || !/^\p{L}+(?:[ '\-]\p{L}+)*$/u.test(nome)) {
+    return "O nome deve conter apenas letras (até 100 caracteres).";
   }
 
-  // Nota: entre 0 e 10
-  const nota = Number(notaTxt);
-  if (notaTxt === "" || isNaN(nota) || nota < 0 || nota > 10) {
-    return "A nota final não deve ser negativa";
+  // Idade: só dígitos (rejeita vazio, negativos, decimais e "1e1"), entre 1 e 120
+  if (!/^\d+$/.test(idadeTxt) || Number(idadeTxt) < 1 || Number(idadeTxt) > 120) {
+    return "A idade deve ser um número inteiro entre 1 e 120.";
+  }
+
+  // Nota: entre 0 e 10, com no máximo 1 casa decimal (ex.: 7 ou 7.5)
+  if (!/^\d+(\.\d)?$/.test(notaTxt) || Number(notaTxt) > 10) {
+    return "A nota final deve estar entre 0 e 10 (no máximo 1 casa decimal).";
   }
 
   return null;
